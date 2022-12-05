@@ -1,0 +1,62 @@
+// #!/usr/bin/env node
+
+// /**
+//  * Module dependencies.
+//  */
+
+require('dotenv').config();
+var http = require('http');
+var mongoose = require('mongoose');
+
+var app = require('../app');
+var debug = require('debug')('api:server');
+
+// /**
+//  * Get port from environment and store in Express.
+//  */
+
+// var port = normalizePort(process.env.PORT || '8080');
+app.set('port', 3001);
+
+// /**
+//  * Create HTTP server.
+//  */
+
+var server = http.createServer(app);
+
+
+// /**
+//  * Listen on provided port, on all network interfaces.
+//  */
+
+
+mongoose.connect( process.env.MONGO_URI)
+.then (()=>{
+  console.log("server connecting...");
+  server.listen(3001, ()=>{
+    console.log("server connected");
+  });
+})
+.catch(err=>{
+  console.log(err)
+})
+
+server.on('listening', onListening);
+
+
+// /**
+//  * Event listener for HTTP server "listening" event.
+//  */
+
+function onListening() {
+  var addr = server.address();
+  console.log("port: " + server.address().port + 
+              "\nEvent Names: " + server.eventNames() + "\n");
+  
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+
